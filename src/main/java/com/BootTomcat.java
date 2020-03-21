@@ -12,7 +12,7 @@ import java.io.File;
 
 public class BootTomcat {
 
-    public static void start() throws ServletException {
+    public static void Run() throws ServletException {
 
         String webappDirLocation = "src/main/webapp/";
         Tomcat tomcat = new Tomcat();
