@@ -1,5 +1,6 @@
-package com;
+package com.controller;
 
+import com.entity.Param;
 import com.spring.ProxyObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

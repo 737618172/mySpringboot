@@ -19,6 +19,7 @@ public class MyFactoryBean implements FactoryBean {
         });
     }
 
+
     @Override
     public Class<?> getObjectType() {
         return ProxyObject.class;
