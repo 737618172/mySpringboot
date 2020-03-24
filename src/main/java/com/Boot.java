@@ -10,7 +10,7 @@ import org.apache.catalina.webresources.StandardRoot;
 import javax.servlet.ServletException;
 import java.io.File;
 
-public class BootTomcat {
+public class Boot {
 
     public static void Run() throws ServletException {
 

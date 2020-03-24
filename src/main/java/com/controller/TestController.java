@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class TestController {
 
-    @Autowired
-    ProxyObject proxyObject;
+//    @Autowired
+//    ProxyObject proxyObject;
 
     @RequestMapping("test")
     public@ResponseBody
     String test(Param param){
-        System.out.println(proxyObject);
+//        System.out.println(proxyObject);
         return param.getName();
     }
 }

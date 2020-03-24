@@ -1,5 +1,7 @@
 package com.entity;
 
+import java.nio.ByteBuffer;
+
 public class Param {
 
     private Long id;
@@ -31,4 +33,19 @@ public class Param {
     public void setAge(Integer age) {
         this.age = age;
     }
+
+    public static void main(String[] args) {
+        //实例初始化
+        ByteBuffer buffer = ByteBuffer.allocate(100);
+        String value ="Netty";
+        buffer.put(value.getBytes());
+        System.out.println(buffer.position());
+        buffer.flip();
+        System.out.println(buffer.position());
+        System.out.println(buffer.remaining());
+        byte[] vArray = new byte[buffer.remaining()];
+        buffer.get(vArray);
+        System.out.println(new String(vArray));
+    }
+
 }

@@ -14,6 +14,6 @@ public class Application {
 //        ProxyObject proxyObject = (ProxyObject) context.getBean("proxyObject");
 //        String pp = proxyObject.pp();
 //        System.out.println(pp);
-        BootTomcat.Run();
+        Boot.Run();
     }
 }
