@@ -34,10 +34,7 @@ public class NioServer {
 
             while(iterator.hasNext()){
                 SelectionKey next = iterator.next();
-//                Selector selectorC = next.selector();
-//                System.out.println(selectorC);
                 iterator.remove();
-                System.out.println(next);
 
                 if(next.isAcceptable()){
                     System.out.println(123);
@@ -46,7 +43,6 @@ public class NioServer {
 
                     int interestSet = SelectionKey.OP_READ ;
                     SelectionKey register1 = accept.register(selector, interestSet, new Buffers(256, 256));
-                    System.out.println("register1============"+register1);
                     System.out.println("accept from " + accept.getRemoteAddress());
                 }
 

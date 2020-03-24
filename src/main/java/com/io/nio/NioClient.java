@@ -3,14 +3,16 @@ package com.io.nio;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class NioClient {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         SocketChannel socketChannel = SocketChannel.open();
         socketChannel.configureBlocking(false);
@@ -18,48 +20,34 @@ public class NioClient {
         int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;
 
         socketChannel.register(selector, interestSet);
-        socketChannel.connect(new InetSocketAddress(9000));
-
-        while(true){
-            int select = selector.select(500);
-            if(select!=0){
-                System.out.println(select);
-            }
-
-            Set<SelectionKey> keySet = selector.selectedKeys();
-            Iterator<SelectionKey> it = keySet.iterator();
-            while(it.hasNext()){
-                SelectionKey next = it.next();
-                it.remove();
-
-                /*通过SelectionKey获取对应的通道*/
-                NioServer.Buffers buffers = (NioServer.Buffers)next.attachment();
-                ByteBuffer readBuffer = buffers.getReadBuffer();
-                ByteBuffer writeBuffer = buffers.gerWriteBuffer();
-
-                /*通过SelectionKey获取通道对应的缓冲区*/
-                SocketChannel sc = (SocketChannel) next.channel();
-
-                if(next.isReadable()){
-                    /*从socket的读缓冲区读取到程序定义的缓冲区中*/
-                    sc.read(readBuffer);
-                    readBuffer.flip();
-                    /*字节到utf8解码*/
-                    /*显示接收到由服务器发送的信息*/
-                    System.out.println(readBuffer);
-                    readBuffer.clear();
-                }
-
-                if(next.isWritable()){
-                    System.out.println("readable");
-                    writeBuffer.put(("123" + "  " + "321").getBytes("UTF-8"));
-                    writeBuffer.flip();
-                    /*将程序定义的缓冲区中的内容写入到socket的写缓冲区中*/
-                    sc.write(writeBuffer);
-                    writeBuffer.clear();
-                }
+        boolean connect = socketChannel.connect(new InetSocketAddress(9000));
+        if(!connect){
+            while(!socketChannel.finishConnect()){
+                System.out.println("连接失败");
             }
         }
 
+        String text = "clientMsg";
+        ByteBuffer wrap = ByteBuffer.wrap(text.getBytes());
+        socketChannel.write(wrap);
+
+
+        while(true){
+            selector.select();
+
+            Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+            while(iterator.hasNext()){
+                SelectionKey next = iterator.next();
+
+                if(next.isReadable()){
+                    NioServer.Buffers buffers = (NioServer.Buffers) next.attachment();
+                    ByteBuffer readBuffer = buffers.getReadBuffer();
+                    SocketChannel channel = (SocketChannel) next.channel();
+                    channel.read(readBuffer);
+                    readBuffer.flip();
+                    System.out.println(new String(readBuffer.array()));
+                }
+            }
+        }
     }
 }
