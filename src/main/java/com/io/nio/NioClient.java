@@ -36,7 +36,6 @@ public class NioClient {
                 String msg = null;
                 try {
                     msg = bufferedReader.readLine();
-                    System.out.println(msg + "已经读完");
                     ByteBuffer wrap = ByteBuffer.wrap(msg.getBytes());
                     socketChannel.write(wrap);
                 } catch (IOException e) {
@@ -47,23 +46,25 @@ public class NioClient {
 
 
         while(!Thread.interrupted()){
-            selector.select();
+            int select = selector.select();
+            if(select>0){
+                Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+                while(iterator.hasNext()){
+                    SelectionKey next = iterator.next();
 
-            Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
-            while(iterator.hasNext()){
-                SelectionKey next = iterator.next();
+                    if(next.isReadable()){
+                        ByteBuffer readBuffer = ByteBuffer.allocate(50);
+                        SocketChannel channel = (SocketChannel) next.channel();
+                        if(channel != socketChannel){
+                            channel.read(readBuffer);
 
-                if(next.isReadable()){
-                    ByteBuffer readBuffer = ByteBuffer.allocate(50);
-                    SocketChannel channel = (SocketChannel) next.channel();
-                    if(channel != socketChannel){
-                        channel.read(readBuffer);
-                        readBuffer.flip();
-                        System.out.println(new String(readBuffer.array()));
+                            System.out.println(new String(readBuffer.array()));
+                        }
                     }
+                    iterator.remove();
                 }
-                iterator.remove();
             }
+
         }
     }
 }

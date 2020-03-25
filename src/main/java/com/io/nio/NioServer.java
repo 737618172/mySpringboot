@@ -21,60 +21,53 @@ public class NioServer {
         SelectionKey register = channel.register(selector, SelectionKey.OP_ACCEPT);
 
 
-        while(true){
+        while (true) {
             int select = selector.select(1000);
-            if(0==select){
+            if (0 == select) {
                 continue;
             }
 
             Set<SelectionKey> selectionKeys = selector.selectedKeys();
             Iterator<SelectionKey> iterator = selectionKeys.iterator();
 
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 SelectionKey next = iterator.next();
 
-                if(next.isAcceptable()){
-                    System.out.println(123);
+                if (next.isAcceptable()) {
                     SocketChannel accept = channel.accept();
                     accept.configureBlocking(false);
 
-                    int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;
-                    SelectionKey register1 = accept.register(selector, interestSet, new Buffers(256, 256));
+                    int interestSet = SelectionKey.OP_READ /*| SelectionKey.OP_WRITE*/;
+                    SelectionKey register1 = accept.register(selector, interestSet);
                     System.out.println("accept from " + accept.getRemoteAddress());
                 }
 
-                if(next.isReadable()){
-                    ByteBuffer readBuffer = ByteBuffer.allocate(20);
-                    /*通过SelectionKey获取对应的通道*/
+                if (next.isReadable()) {
                     SocketChannel sc = (SocketChannel) next.channel();
+                    ByteBuffer readBuffer = ByteBuffer.allocate(20);
 
-                    /*从底层socket读缓冲区中读入数据*/
-                    sc.read(readBuffer);
-                    readBuffer.flip();
+                    try {
+                        /*从底层socket读缓冲区中读入数据*/
+                        sc.read(readBuffer);
+                    } catch (Exception e) {
+                        System.out.println(sc.getRemoteAddress() + "离线了");
+                        next.cancel();
+                        sc.close();
+                    }
+//                    readBuffer.flip();
                     String text = new String(readBuffer.array());
                     System.out.println(text);
 
                     Set<SelectionKey> keys = selector.keys();
-                    for(SelectionKey s :keys){
-                        if(s.isWritable()){
-                            SocketChannel ch = (SocketChannel) s.channel();
+                    for (SelectionKey s : keys) {
+                        Channel channel1 = s.channel();
+                        if (channel1 instanceof SocketChannel && channel1 != sc) {
                             ByteBuffer wrap = ByteBuffer.wrap(text.getBytes());
-                            ch.write(wrap);
+                            ((SocketChannel) channel1).write(wrap);
                         }
                     }
                 }
 
-//                if(next.isWritable()){
-//                    System.out.println("readable");
-//                    SocketChannel sc = (SocketChannel) next.channel();
-//                    Buffers buffers = (Buffers) next.attachment();
-//                    ByteBuffer writeBuffer = buffers.gerWriteBuffer();
-//                    writeBuffer.put(("123" + "  " + "321").getBytes("UTF-8"));
-//                    writeBuffer.flip();
-//                    /*将程序定义的缓冲区中的内容写入到socket的写缓冲区中*/
-//                    sc.write(writeBuffer);
-//                    writeBuffer.clear();
-//                }
                 iterator.remove();
             }
         }
@@ -86,16 +79,16 @@ public class NioServer {
         ByteBuffer readBuffer;
         ByteBuffer writeBuffer;
 
-        public Buffers(int readCapacity, int writeCapacity){
+        public Buffers(int readCapacity, int writeCapacity) {
             readBuffer = ByteBuffer.allocate(readCapacity);
             writeBuffer = ByteBuffer.allocate(writeCapacity);
         }
 
-        public ByteBuffer getReadBuffer(){
+        public ByteBuffer getReadBuffer() {
             return readBuffer;
         }
 
-        public ByteBuffer gerWriteBuffer(){
+        public ByteBuffer gerWriteBuffer() {
             return writeBuffer;
         }
     }
