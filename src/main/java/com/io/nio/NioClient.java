@@ -1,6 +1,8 @@
 package com.io.nio;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectableChannel;
@@ -27,12 +29,24 @@ public class NioClient {
             }
         }
 
-        String text = "clientMsg";
-        ByteBuffer wrap = ByteBuffer.wrap(text.getBytes());
-        socketChannel.write(wrap);
+
+        new Thread(()->{
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+            while(true){
+                String msg = null;
+                try {
+                    msg = bufferedReader.readLine();
+                    System.out.println(msg + "已经读完");
+                    ByteBuffer wrap = ByteBuffer.wrap(msg.getBytes());
+                    socketChannel.write(wrap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
 
-        while(true){
+        while(!Thread.interrupted()){
             selector.select();
 
             Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
@@ -40,13 +54,15 @@ public class NioClient {
                 SelectionKey next = iterator.next();
 
                 if(next.isReadable()){
-                    NioServer.Buffers buffers = (NioServer.Buffers) next.attachment();
-                    ByteBuffer readBuffer = buffers.getReadBuffer();
+                    ByteBuffer readBuffer = ByteBuffer.allocate(50);
                     SocketChannel channel = (SocketChannel) next.channel();
-                    channel.read(readBuffer);
-                    readBuffer.flip();
-                    System.out.println(new String(readBuffer.array()));
+                    if(channel != socketChannel){
+                        channel.read(readBuffer);
+                        readBuffer.flip();
+                        System.out.println(new String(readBuffer.array()));
+                    }
                 }
+                iterator.remove();
             }
         }
     }
