@@ -13,7 +13,6 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> { // (1)
 
     public static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
-
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String o) throws Exception {
         Channel channel = ctx.channel();
@@ -29,11 +28,8 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> { // (1)
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
+        channelGroup.writeAndFlush(channel.remoteAddress()+"加入连接"+"\n");
         channelGroup.add(channel);
-        System.out.println(channel.remoteAddress()+"加入连接," + channelGroup.size()+"人在线");
-        for(Channel c:channelGroup){
-            c.writeAndFlush(channel.remoteAddress()+"加入连接"+"\n");
-        }
     }
 
     @Override
