@@ -1,6 +1,7 @@
 package com.entity;
 
-import java.nio.ByteBuffer;
+
+import java.util.ArrayList;
 
 public class Param {
 
@@ -35,17 +36,16 @@ public class Param {
     }
 
     public static void main(String[] args) {
-        //实例初始化
-        ByteBuffer buffer = ByteBuffer.allocate(100);
-        String value ="Netty";
-        buffer.put(value.getBytes());
-        System.out.println(buffer.position());
-        buffer.flip();
-        System.out.println(buffer.position());
-        System.out.println(buffer.remaining());
-        byte[] vArray = new byte[buffer.remaining()];
-        buffer.get(vArray);
-        System.out.println(new String(vArray));
+        int i =1;
+        while(true)
+            new String(""+  i++);
     }
+//
+//    public static void a(){
+//        b();
+//    }
+//    public static void b(){
+//        a();
+//    }
 
 }

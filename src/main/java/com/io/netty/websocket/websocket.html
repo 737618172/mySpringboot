@@ -5,21 +5,24 @@
     <title>Title</title>
 </head>
 <body>
+<script type="text/javascript" src="socket.io.js"></script>
 <script>
+
     var socket;
     if(window.WebSocket){
-        socket = new WebSocket("ws://localhost:8030/");
+        socket = new WebSocket("ws://localhost:8040/");
         //接受服务器消息
         socket.onmessage = function (ex){
             var rt = document.getElementById("response");
             rt.value = rt.value + "\n" + ex.data;
         }
-        socket.open= function (ev){
+        socket.onopen= function (ex){
             var rt = document.getElementById("response");
             rt.value = rt.value + "\n" +"连接开启";
+            // send(2);
         }
 
-        socket.onclose= function (ev){
+        socket.onclose= function (ex){
             var rt = document.getElementById("response");
             rt.value = rt.value + "\n" +"连接断开";
         }
@@ -37,16 +40,18 @@
         // if(socket.readyState = WebSocket.readyState){
             console.log(msg);
             socket.send(msg);
+
         // }
+        document.getElementsByName('message')[0].value ='';
     }
 
 
 </script>
 <form onsubmit="return false;">
-    <textarea name="message" ></textarea>
+    <textarea name="message"  rows="20" cols="50"></textarea>
     <input type="button" value="发送" onclick="send(this.form.message.value)"/>
 
-    <textarea id="response"></textarea>
+    <textarea id="response" rows="20" cols="50"></textarea>
     <input type="button" value="清空内容" onclick="document.getElementById('response').value='' "/>
 </form>
 

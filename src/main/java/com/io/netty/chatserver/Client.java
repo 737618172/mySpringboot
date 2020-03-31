@@ -1,4 +1,4 @@
-package com.io.netty.discardserver;
+package com.io.netty.chatserver;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -7,16 +7,12 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import io.netty.util.CharsetUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
 
 public class Client {
 
@@ -53,7 +49,7 @@ public class Client {
                 channel.writeAndFlush(in.readLine() + "\r\n");
             }
 
-        } catch (InterruptedException | IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             workerGroup.shutdownGracefully();

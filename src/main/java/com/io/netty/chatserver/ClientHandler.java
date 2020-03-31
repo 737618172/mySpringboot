@@ -1,4 +1,4 @@
-package com.io.netty.discardserver;
+package com.io.netty.chatserver;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

@@ -1,5 +1,6 @@
 package com;
 
+import com.io.netty.websocket.NettyWebSocketServer;
 import com.spring.ProxyObject;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -14,6 +15,7 @@ public class Application {
 //        ProxyObject proxyObject = (ProxyObject) context.getBean("proxyObject");
 //        String pp = proxyObject.pp();
 //        System.out.println(pp);
+//        new Thread(()->NettyWebSocketServer.run()).start();
         Boot.Run();
     }
 }

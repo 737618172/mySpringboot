@@ -1,5 +1,6 @@
-package com.io.netty.discardserver;
+package com.io.netty.chatserver;
 
+import com.io.netty.discardserver.ServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
