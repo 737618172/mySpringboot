@@ -47,7 +47,6 @@ public class SimpleChatClient {
         } finally {
             group.shutdownGracefully();
         }
-
     }
 
 }

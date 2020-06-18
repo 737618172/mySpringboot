@@ -42,7 +42,7 @@ public class NettyWebSocketServer {
 
             System.out.println("服务器启动");
             // start
-            ChannelFuture future = boot.bind(8040);
+            ChannelFuture future = boot.bind(8020);
             future.channel().closeFuture().sync();
 //            System.out.println("服务器关闭");
         } catch (Exception e) {

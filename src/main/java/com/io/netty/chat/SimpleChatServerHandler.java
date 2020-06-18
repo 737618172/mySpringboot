@@ -43,12 +43,12 @@ public class SimpleChatServerHandler extends SimpleChannelInboundHandler<String>
     }
     @Override
 	protected void channelRead0(ChannelHandlerContext ctx, String s) throws Exception { // (4)
-		Channel incoming = ctx.channel();
-		for (Channel channel : channels) {
+        Channel incoming = ctx.channel();
+        for (Channel channel : channels) {
             if (channel != incoming){
                 channel.writeAndFlush("[" + incoming.remoteAddress() + "]" + s + "\n");
             } else {
-            	channel.writeAndFlush("[you]" + s + "\n");
+                channel.writeAndFlush("[you]" + s + "\n");
             }
         }
 	}

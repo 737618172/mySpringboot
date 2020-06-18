@@ -2,7 +2,8 @@ package com.io.netty.chat;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
- 
+import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
+
 /**
  * 客户端 channel
  * 

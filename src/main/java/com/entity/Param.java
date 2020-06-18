@@ -1,9 +1,11 @@
 package com.entity;
 
 
-import java.util.ArrayList;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.core.type.AnnotationMetadata;
 
-public class Param {
+public class Param implements ImportBeanDefinitionRegistrar {
 
     private Long id;
 
@@ -39,6 +41,11 @@ public class Param {
         int i =1;
         while(true)
             new String(""+  i++);
+    }
+
+    @Override
+    public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry beanDefinitionRegistry) {
+        System.out.println("registerBeanDefinitions");
     }
 //
 //    public static void a(){
